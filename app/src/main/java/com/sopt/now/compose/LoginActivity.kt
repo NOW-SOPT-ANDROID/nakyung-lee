@@ -7,14 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -98,10 +91,10 @@ fun SoptComposable(
     getMbti: String
 
 ) {
-    var userId by remember { mutableStateOf(getId) }
-    var userPassword by remember { mutableStateOf(getPassword) }
-    var userName by remember { mutableStateOf(getName) }
-    var userMbti by remember { mutableStateOf(getMbti) }
+    var userId by remember { mutableStateOf("") }
+    var userPassword by remember { mutableStateOf("") }
+    var userName by remember { mutableStateOf("") }
+    var userMbti by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize(),
