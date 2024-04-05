@@ -7,8 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,16 +25,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val id = intent.getStringExtra("id")
         val password = intent.getStringExtra("password")
-        val name = intent.getStringExtra("name")
+        val nickname = intent.getStringExtra("nickname")
 
         setContent {
-            MainActivityContent(id ?: "", password ?: "", name ?: "")
+            MainActivityContent(id = id ?: "", password = password ?: "", nickname = nickname?: "")
         }
     }
 }
 
 @Composable
-fun MainActivityContent(id: String, password: String, name: String) {
+fun MainActivityContent(id: String, password: String, nickname: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,30 +47,33 @@ fun MainActivityContent(id: String, password: String, name: String) {
             contentDescription = null,
             modifier = Modifier
                 .aspectRatio(1.5f) // aspectRatio 설정
-                .padding(top = 16.dp)
+                .padding(top = 30.dp)
                 .padding(bottom = 10.dp)
         )
-        UserInfoComposable(id = id, password = password, name = name)
+        UserInfoComposable(id, password, nickname)
     }
 }
 
 @Composable
-fun UserInfoComposable(id: String, password: String, name: String) {
+fun UserInfoComposable(id: String, password: String, nickname: String) {
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = "안녕하세요 $name 님! \n",
+        Text(text = "안녕하세요, $id 님!\n",
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold)
-        Text(text = "아이디: \n$id\n",
+
+        Text(text = "아이디: $id \n",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = PurpleGrey40)
-        Text(text = "비밀번호: \n$password\n",
+
+        Text(text = "비밀번호: $password \n",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = PurpleGrey40)
+
 
         Button(
             onClick = { },
@@ -99,7 +100,7 @@ fun MainPreview() {
         UserInfoComposable(
             id = "exampleId",
             password = "examplePassword",
-            name = "exampleName",
+            nickname = "exampleNickname"
         )
     }
 }

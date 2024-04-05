@@ -41,24 +41,24 @@ class LoginActivity : ComponentActivity() {
 
         val getId = intent.getStringExtra("id") ?: ""
         val getPassword = intent.getStringExtra("password") ?: ""
-        val getName = intent.getStringExtra("name") ?: ""
+        val getNickname = intent.getStringExtra("nickname") ?: ""
         val getMbti = intent.getStringExtra("mbti") ?: ""
 
         setContent {
-            LoginContent(getId, getPassword, getName, getMbti)
+            LoginContent(getId, getPassword, getNickname, getMbti)
         }
     }
 }
 
 @Composable
-fun LoginContent(getId: String, getPassword: String, getName: String, getMbti: String) {
+fun LoginContent(getId: String, getPassword: String, getNickname: String, getMbti: String) {
     var isLogged by remember { mutableStateOf(false) }
 
     if (!isLogged) {
         SoptComposable(
             getId = getId,
             getPassword = getPassword,
-            getName = getName,
+            getNickname = getNickname,
             getMbti = getMbti
         )
     } else {
@@ -71,12 +71,12 @@ fun isValid(userId: String?, userPassword: String?, getId: String, getPassword: 
     return userId != "" && userPassword != "" && userId == getId && userPassword == getPassword
 }
 
-fun Success(context: Context, userId: String, userPassword: String, userName: String?, userMbti: String?) {
+fun Success(context: Context, userId: String, userPassword: String, userNickname: String, userMbti: String?) {
 
     val intent = Intent(context, MainActivity::class.java).apply {
         putExtra("id", userId)
         putExtra("password", userPassword)
-        putExtra("name", userName)
+        putExtra("nickname", userNickname)
         putExtra("mbti", userMbti)
     }
     context.startActivity(intent)
@@ -87,13 +87,13 @@ fun Success(context: Context, userId: String, userPassword: String, userName: St
 fun SoptComposable(
     getId: String,
     getPassword: String,
-    getName: String,
+    getNickname: String,
     getMbti: String
 
 ) {
     var userId by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
-    var userName by remember { mutableStateOf("") }
+    var userNickname by remember { mutableStateOf("") }
     var userMbti by remember { mutableStateOf("") }
 
     Column(
@@ -117,14 +117,12 @@ fun SoptComposable(
         // ID 입력하는 부분 (ID 텍스트는 좌측 정렬, 텍스트 필드는 중앙 정렬)
         Column(verticalArrangement = Arrangement.Center) {
             Text(text = "ID")
-            var text = remember {
-                mutableStateOf("")
-            }
+
             TextField(
                 value = userId,
                 onValueChange = { userId = it },
                 label = { Text("ID를 입력하세요") },
-                placeholder = { Text("EX) nakyung") },
+                placeholder = { Text("EX) helen0816") },
                 singleLine = true,
             )
         }
@@ -135,9 +133,7 @@ fun SoptComposable(
         // PW 입력하는 부분 (PW 텍스트는 좌측 정렬, 텍스트 필드는 중앙 정렬)
         Column(verticalArrangement = Arrangement.Center) {
             Text(text = "PASSWORD")
-            var passwordText = remember {
-                mutableStateOf("")
-            }
+
             TextField(
                 value = userPassword,
                 onValueChange = { userPassword = it },
@@ -154,8 +150,9 @@ fun SoptComposable(
 
         Button(
             onClick = { if (isValid(userId, userPassword, getId ?: "", getPassword ?: "")) {
-                Success(context, userId, userPassword, userName, userMbti)
+                Success(context, userId, userPassword, userNickname, userMbti)
             }
+                else Toast.makeText(context, "아이디 또는 비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             },
             contentPadding = PaddingValues(start = 90.dp, end = 90.dp),
             colors = ButtonDefaults.buttonColors(
@@ -194,6 +191,6 @@ fun SoptComposable(
 @Composable
 fun LoginPreview() {
     NOWSOPTAndroidTheme {
-        SoptComposable(getId ="", getPassword ="", getName = "", getMbti = "")
+        SoptComposable(getId ="", getPassword ="", getNickname = "", getMbti = "")
     }
 }

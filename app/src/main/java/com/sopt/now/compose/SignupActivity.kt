@@ -35,7 +35,7 @@ import com.sopt.now.compose.ui.theme.NOWSOPTAndroidTheme
 class UserInfo(
     val userId: String,
     val userPassword: String,
-    val userName: String,
+    val userNickname: String,
     val userMbti: String
 )
 
@@ -50,7 +50,7 @@ fun Signup () {
     {
         var userId by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
-        var userName by remember { mutableStateOf("") }
+        var userNickname by remember { mutableStateOf("") }
         var userMbti by remember { mutableStateOf("") }
 
         Text(
@@ -107,8 +107,8 @@ fun Signup () {
         )
 
         TextField(
-            value = userName,
-            onValueChange = { newValue -> userName = newValue },
+            value = userNickname,
+            onValueChange = { newValue -> userNickname = newValue },
             modifier = Modifier
                 .fillMaxWidth(),
             label = { Text("닉네임을 입력하세요(공백 안됨)") },
@@ -138,14 +138,13 @@ fun Signup () {
         val context = LocalContext.current
 
         Button(onClick = {
-            if (CheckId(context, userId) && CheckPassword(context, userPassword) && CheckName(context, userName) && CheckMbti(context, userMbti)) {
+            if (CheckId(context, userId) && CheckPassword(context, userPassword) && CheckNickname(context, userNickname) && CheckMbti(context, userMbti)) {
                 val intent = Intent(context, LoginActivity::class.java).apply {
                     putExtra("id", userId)
                     putExtra("password", userPassword)
-                    putExtra("name", userName)
+                    putExtra("nickname", userNickname)
                     putExtra("mbti", userMbti)
                 }
-
                 context.startActivity(intent) // 회원가입 성공 시 MainActivity로 이동
                 Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
 
@@ -178,8 +177,8 @@ fun CheckPassword(context: Context, password: String): Boolean {
     }
 }
 
-fun CheckName(context: Context, name: String): Boolean {
-    if (name.isNotBlank() && name.length > 1) {
+fun CheckNickname(context: Context, nickname: String): Boolean {
+    if (nickname.isNotBlank() && nickname.length > 1) {
         return true
     } else {
         Toast.makeText(context, "닉네임은 2자 이상의 유효한 문자로 입력해주세요", Toast.LENGTH_SHORT).show()
