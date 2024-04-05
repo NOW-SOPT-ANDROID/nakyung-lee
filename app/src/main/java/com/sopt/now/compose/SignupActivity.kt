@@ -1,8 +1,8 @@
 package com.sopt.now.compose
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -138,7 +138,7 @@ fun Signup () {
         val context = LocalContext.current
 
         Button(onClick = {
-            if (CheckId(userId) && CheckPassword(userPassword) && CheckName(userName) && CheckMbti(userMbti)) {
+            if (CheckId(context, userId) && CheckPassword(context, userPassword) && CheckName(context, userName) && CheckMbti(context, userMbti)) {
                 val intent = Intent(context, LoginActivity::class.java).apply {
                     putExtra("id", userId)
                     putExtra("password", userPassword)
@@ -159,33 +159,45 @@ fun Signup () {
     }
 }
 
-fun CheckId(id: String): Boolean {
-    if(id.length >= 6 && id.length <= 10){
+fun CheckId(context: Context, id: String): Boolean {
+    if (id.length >= 6 && id.length <= 10) {
         return true
+    } else {
+        Toast.makeText(context, "ID는 6자 이상, 10자 이하로 입력해주세요", Toast.LENGTH_SHORT).show()
+        return false
     }
-    else return false
 }
 
-fun CheckPassword(password: String): Boolean {
+fun CheckPassword(context: Context, password: String): Boolean {
     if(password.length >= 8 && password.length <= 12){
         return true
     }
-    else return false
+    else {
+        Toast.makeText(context, "PASSWORD는 8자 이상, 12자 이하로 입력해주세요", Toast.LENGTH_SHORT).show()
+        return false
+    }
 }
 
-fun CheckName(name: String): Boolean {
-    if (name.isNotBlank() && name.length > 1) return true
-    else return false
+fun CheckName(context: Context, name: String): Boolean {
+    if (name.isNotBlank() && name.length > 1) {
+        return true
+    } else {
+        Toast.makeText(context, "닉네임은 2자 이상의 유효한 문자로 입력해주세요", Toast.LENGTH_SHORT).show()
+        return false
+    }
 }
-fun CheckMbti(mbti: String): Boolean {
-    if((mbti.length == 4)
+fun CheckMbti(context: Context, mbti: String): Boolean {
+    if ((mbti.length == 4)
         && (mbti[0].uppercase() == "E" || mbti[0].uppercase() == "I")
         && (mbti[1].uppercase() == "S" || mbti[1].uppercase() == "N")
         && (mbti[2].uppercase() == "F" || mbti[2].uppercase() == "T")
         && (mbti[3].uppercase() == "P" || mbti[3].uppercase() == "J")
     )
         return true
-    else return false
+    else {
+        Toast.makeText(context, "MBTI를 제대로 입력해주세요(ex. ENTJ)", Toast.LENGTH_SHORT).show()
+        return false
+    }
 }
 class SignupActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
