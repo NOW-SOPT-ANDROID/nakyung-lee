@@ -150,6 +150,7 @@ fun Signup () {
                 Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
 
             } else {
+
             }
         }) {
             Text("Sign Up")
