@@ -37,8 +37,22 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.menu_mypage-> {
-                    replaceFragment(MyPageFragment())
+                R.id.menu_mypage -> {
+                    val id = intent.getStringExtra("id")
+                    val password = intent.getStringExtra("password")
+                    val nickname = intent.getStringExtra("nickname")
+
+                    // MyPageFragment로 데이터 전달
+                    val bundle = Bundle().apply {
+                        putString("id", id)
+                        putString("password", password)
+                        putString("nickname", nickname)
+                    }
+
+                    val myPageFragment = MyPageFragment()
+                    myPageFragment.arguments = bundle
+
+                    replaceFragment(myPageFragment) // 수정된 부분
                     true
                 }
 
