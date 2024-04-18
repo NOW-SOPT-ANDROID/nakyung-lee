@@ -1,66 +1,63 @@
 package com.sopt.now.compose
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sopt.now.compose.ui.theme.NOWSOPTAndroidTheme
 import com.sopt.now.compose.ui.theme.PurpleGrey40
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val id = intent.getStringExtra("id")
-        val password = intent.getStringExtra("password")
-        val nickname = intent.getStringExtra("nickname")
-
-        setContent {
-            MainActivityContent(id = id ?: "", password = password ?: "", nickname = nickname?: "")
-        }
-    }
-}
-
+import com.sopt.now.compose.user.UserInfo
 @Composable
-fun MainActivityContent(id: String, password: String, nickname: String) {
+fun MypageView(userInfo: UserInfo) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()
+            .padding(30.dp),
+        verticalArrangement = Arrangement.spacedBy(40.dp),
     ) {
-        Image (
-            painter = painterResource(id = R.drawable.apple), // 이미지 리소스 추가
-            contentDescription = null,
-            modifier = Modifier
-                .aspectRatio(1.5f) // aspectRatio 설정
-                .padding(top = 30.dp)
-                .padding(bottom = 10.dp)
-        )
-        UserInfoComposable(id, password, nickname)
+        if (userInfo != null) {
+            Image(
+                painter = painterResource(id = R.drawable.apple),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(110.dp)
+                    .aspectRatio(1f)
+            )
+            Text(text = "안녕하세요, ${userInfo.nickname}님",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(text = userInfo.id)
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(text = userInfo.password)
+        } else {
+            Text(
+                text = "사용자 정보를 불러올 수 없습니다.",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
-}
-
-@Composable
+}@Composable
 fun UserInfoComposable(id: String, password: String, nickname: String) {
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = "안녕하세요, $id 님!\n",
+        Text(text = "안녕하세요, $nickname 님!\n",
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold)
 
@@ -77,7 +74,7 @@ fun UserInfoComposable(id: String, password: String, nickname: String) {
 
         Button(
             onClick = { },
-            
+
             contentPadding = PaddingValues(start = 90.dp, end = 90.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.LightGray,
@@ -89,18 +86,5 @@ fun UserInfoComposable(id: String, password: String, nickname: String) {
             )
         }
     }
-    
-}
 
-
-@Preview(showBackground = true)
-@Composable
-fun MainPreview() {
-    NOWSOPTAndroidTheme {
-        UserInfoComposable(
-            id = "exampleId",
-            password = "examplePassword",
-            nickname = "exampleNickname"
-        )
-    }
 }

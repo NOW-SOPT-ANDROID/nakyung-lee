@@ -1,4 +1,4 @@
-package com.sopt.now.compose
+package com.sopt.now.compose.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,14 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -28,11 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import com.sopt.now.compose.ui.theme.NOWSOPTAndroidTheme
 
 class LoginActivity : ComponentActivity() {
@@ -152,7 +143,7 @@ fun SoptComposable(
             onClick = { if (isValid(userId, userPassword, getId ?: "", getPassword ?: "")) {
                 Success(context, userId, userPassword, userNickname, userMbti)
             }
-                else Toast.makeText(context, "아이디 또는 비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(context, "아이디 또는 비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             },
             contentPadding = PaddingValues(start = 90.dp, end = 90.dp),
             colors = ButtonDefaults.buttonColors(
@@ -191,6 +182,6 @@ fun SoptComposable(
 @Composable
 fun LoginPreview() {
     NOWSOPTAndroidTheme {
-        SoptComposable(getId ="", getPassword ="", getNickname = "", getMbti = "")
+        SoptComposable(getId = "", getPassword = "", getNickname = "", getMbti = "")
     }
 }
