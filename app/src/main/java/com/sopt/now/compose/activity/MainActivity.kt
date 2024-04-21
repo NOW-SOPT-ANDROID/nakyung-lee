@@ -34,12 +34,10 @@ import androidx.compose.runtime.setValue
 import com.sopt.now.compose.BottomNaviItem
 import com.sopt.now.compose.HomeView
 import com.sopt.now.compose.MypageView
+import com.sopt.now.compose.homeDataList
 import com.sopt.now.compose.user.UserInfo
 
 class MainActivity : ComponentActivity() {
-    companion object {
-        const val USER_INFO = "user_info"
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,15 +48,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold(userInfo)
+                    MainScaffold(userInfo)
                 }
             }
         }
     }
+    companion object {
+        const val USER_INFO = "user_info"
+    }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Scaffold(userInfo: UserInfo?) {
+fun MainScaffold(userInfo: UserInfo?) {
     var presses by remember { mutableIntStateOf(0) }
     var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf(
@@ -107,7 +108,7 @@ fun Scaffold(userInfo: UserInfo?) {
         ) {
             when(selectedItem) {
                 0 -> {
-                    HomeView()
+                    HomeView(homeDataList = homeDataList)
                 }
                 1 -> {
                     // search 페이지 구현 x
@@ -119,7 +120,6 @@ fun Scaffold(userInfo: UserInfo?) {
 
                 }
             }
-
         }
     }
 }
