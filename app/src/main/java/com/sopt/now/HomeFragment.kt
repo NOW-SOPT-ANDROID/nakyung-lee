@@ -13,7 +13,7 @@ import com.sopt.now.databinding.ItemFriendBinding
 class HomeFragment: Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var friendListAdapter: FriendListAdapter //
+    private lateinit var friendListAdapter: FriendListAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

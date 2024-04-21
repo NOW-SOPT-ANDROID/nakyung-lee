@@ -28,11 +28,11 @@ class MyPageFragment: Fragment() {
         val password = arguments?.getString("password")
         val nickname = arguments?.getString("nickname")
 
-        Log.d("MyPageFragment", "ID: $id, Password: $password, Nickname: $nickname")
-
-        view.findViewById<TextView>(R.id.tvId).text = "아이디: $id"
-        view.findViewById<TextView>(R.id.tvPassword).text = "비밀번호: $password"
-        view.findViewById<TextView>(R.id.tvNickname).text = "닉네임: $nickname"
+        with(binding) {
+            tvId.text = "아이디: $id"
+            tvPassword.text =  "비밀번호: $password"
+            tvNickname.text = "닉네임: $nickname"
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
