@@ -1,4 +1,4 @@
-package com.sopt.now
+package com.sopt.now.presentation.main.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.sopt.now.R
 import com.sopt.now.databinding.FragmentHomeBinding
-import com.sopt.now.databinding.ItemFriendBinding
 
 class HomeFragment: Fragment() {
     private var _binding: FragmentHomeBinding? = null

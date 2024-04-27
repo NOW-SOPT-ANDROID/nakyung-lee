@@ -1,13 +1,10 @@
-package com.sopt.now
+package com.sopt.now.presentation.auth.signup
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.snackbar.Snackbar
 import com.sopt.now.databinding.ActivitySignupBinding
 
