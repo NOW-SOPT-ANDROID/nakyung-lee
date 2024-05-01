@@ -36,7 +36,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:hint="ID를 입력하세요"
-        android:id="@+id/txtfield_id"
+        android:id="@+id/et_id"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -57,7 +57,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:hint="PASSWORD를 입력하세요"
-        android:id="@+id/txtfield_pw"
+        android:id="@+id/et_pw"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -78,14 +78,14 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:hint="NICKNAME을 입력하세요"
-        android:id="@+id/txtfield_name"
+        android:id="@+id/et_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MBTI"
+        android:text="핸드폰 번호 (ex. 010-0000-0000)"
         android:textSize="20dp"
         android:layout_marginTop="470dp"
         android:layout_marginStart="70dp"
@@ -98,9 +98,9 @@
         android:layout_marginTop="500dp"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
-        android:hint="MBTI를 입력하세요"
+        android:hint="핸드폰 번호를 입력하세요"
         android:inputType="textCapCharacters"
-        android:id="@+id/txtfield_mbti"
+        android:id="@+id/et_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />

@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                     val myPageFragment = MyPageFragment()
                     myPageFragment.arguments = bundle
 
-                    replaceFragment(myPageFragment) // 수정된 부분
+                    replaceFragment(myPageFragment)
                     true
                 }
 

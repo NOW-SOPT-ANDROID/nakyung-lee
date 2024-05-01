@@ -1,61 +1,111 @@
 package com.sopt.now.presentation.auth.signup
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.sopt.now.databinding.ActivitySignupBinding
+import com.sopt.now.presentation.RequestSignUpDto
+import com.sopt.now.presentation.ResponseSignUpDto
+import com.sopt.now.presentation.ServicePool
+import com.sopt.now.presentation.auth.login.LoginActivity
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Call
 
 class SignupActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySignupBinding
 
+    private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater) }
+    private val viewModel by viewModels<SignUpViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initViews()
+        initObserver()
+    }
 
+    private fun initViews() {
         binding.btnSignup.setOnClickListener {
-            val id = binding.txtfieldId.text.toString()
-            val password = binding.txtfieldPw.text.toString()
-            val nickname = binding.txtfieldName.text.toString()
-            val mbti = binding.txtfieldMbti.text.toString()
+            viewModel.signUp(getSignUpRequestDto())
+        }
+    }
 
-            if (id.isEmpty() || password.isEmpty() || nickname.isEmpty() || mbti.isEmpty()) {
-                Snackbar.make(
-                    binding.root,
-                    "모든 정보를 입력하세요",
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else if (binding.txtfieldId.length() < 6 || binding.txtfieldId.length() > 10) {
-                Snackbar.make(
-                    binding.root,
-                    "아이디를 6~10자로 설정해주세요",
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else if (binding.txtfieldPw.length() < 8 || binding.txtfieldPw.length() > 12) {
-                Snackbar.make(
-                    binding.root,
-                    "비밀번호를 8~12자로 설정해주세요",
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else if (binding.txtfieldName.length() <= 0) {
-                Snackbar.make(
-                    binding.root,
-                    "닉네임은 한 글자 이상으로 설정해주세요",
-                    Snackbar.LENGTH_LONG
-                ).show()
-            } else {
-                val resultIntent = Intent()
-                resultIntent.putExtra("id", id)
-                resultIntent.putExtra("password", password)
-                resultIntent.putExtra("nickname", nickname)
-                resultIntent.putExtra("mbti", mbti)
-                setResult(Activity.RESULT_OK, resultIntent)
-                Toast.makeText(this, "회원가입 성공!", Toast.LENGTH_SHORT).show()
+    private fun initObserver() {
+        viewModel.liveData.observe(this) { state ->
+            if (state.isSuccess) {
+                startActivity(Intent(this, LoginActivity::class.java))
                 finish()
+            } else {
+                Toast.makeText(
+                    this@SignupActivity,
+                    state.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
+    }
+    private fun getSignUpRequestDto(): RequestSignUpDto {
+        val id = binding.etId.text.toString()
+        val password = binding.etPw.text.toString()
+        val nickname = binding.etName.text.toString()
+        val phoneNumber = binding.etNumber.text.toString()
+        return RequestSignUpDto(
+            authenticationId = id,
+            password = password,
+            nickname = nickname,
+            phone = phoneNumber
+        )
+    }
+}
+
+data class SignUpState(
+    val isSuccess: Boolean,
+    val message: String
+)
+
+class SignUpViewModel : ViewModel() {
+    private val authService by lazy { ServicePool.authService }
+    val liveData = MutableLiveData<SignUpState>()
+
+    fun signUp(signUpRequest: RequestSignUpDto) {
+        authService.signUp(signUpRequest).enqueue(object : Callback<ResponseSignUpDto> {
+            override fun onResponse(
+                call: Call<ResponseSignUpDto>,
+                response: Response<ResponseSignUpDto>,
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    val userId = response.headers()["location"]
+
+                    Log.d("SignUpSuccess", "Response data: $data, UserID: $userId")
+                    liveData.value = SignUpState(isSuccess = true, message = "회원가입 성공! 유저 ID: $userId")
+                } else {
+                    Log.e(
+                        "SignUpError",
+                        "HTTP ${response.code()}: ${response.errorBody()?.string()}"
+                    )
+                    handleError(response)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseSignUpDto>, t: Throwable) {
+                Log.e("SignUpFailure", "Error during sign-up: ${t.localizedMessage}")
+
+                liveData.value = SignUpState(isSuccess = false, message = "서버 에러 발생: ${t.localizedMessage}")
+            }
+        })
+    }
+
+    private fun handleError(response: Response<ResponseSignUpDto>) {
+        val message = when (response.code()) {
+            400 -> "잘못된 요청입니다. 입력 값을 확인하세요."
+            409 -> "이미 등록된 사용자입니다."
+            else -> "회원가입 실패: ${response.message()}"
+        }
+        liveData.value = SignUpState(isSuccess = false, message = message)
     }
 }
