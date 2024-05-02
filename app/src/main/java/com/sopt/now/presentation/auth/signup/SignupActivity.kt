@@ -20,7 +20,6 @@ import retrofit2.Call
 data class SignUpState(
     val isSuccess: Boolean,
     val message: String,
-    val userId: String? = null
 )
 
 class SignUpViewModel : ViewModel() {
@@ -85,7 +84,6 @@ class SignupActivity : AppCompatActivity() {
             if (SignUpState.isSuccess) {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
-            } else {
                 Toast.makeText(
                     this@SignupActivity,
                     SignUpState.message,
