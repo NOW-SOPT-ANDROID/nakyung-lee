@@ -66,33 +66,33 @@ class LoginViewModel : ViewModel() {
     }
     fun login(request: RequestLoginDto) {
         authService.login(request).enqueue(object : Callback<ResponseLoginDto> {
-                override fun onResponse(
-                    call: Call<ResponseLoginDto>,
-                    response: Response<ResponseLoginDto>
-                ) {
-                    if (response.isSuccessful) {
-                        val data = response.body()
-                        val memberId = response.headers()["location"]
+            override fun onResponse(
+                call: Call<ResponseLoginDto>,
+                response: Response<ResponseLoginDto>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    val memberId = response.headers()["location"]
 
-                        liveData.value = LoginState(
-                            isSuccess = true,
-                            message = "로그인 성공 user의 id: $memberId ",
-                            memberId = memberId
-                        )
-                    } else {
-                        Log.e(
-                            "LoginError",
-                            "HTTP ${response.code()}: ${response.errorBody()?.string()}"
-                        )
-                        handleError(response)
-                    }
+                    liveData.value = LoginState(
+                        isSuccess = true,
+                        message = "로그인 성공 user의 id: $memberId ",
+                        memberId = memberId
+                    )
+                } else {
+                    Log.e(
+                        "LoginError",
+                        "HTTP ${response.code()}: ${response.errorBody()?.string()}"
+                    )
+                    handleError(response)
                 }
+            }
 
-                override fun onFailure(call: Call<ResponseLoginDto>, t: Throwable) {
-                    Log.e("LoginError", "로그인 중 오류 발생: ${t.localizedMessage}")
-                    liveData.value = LoginState(isSuccess = false, message = "서버 에러 발생: ${t.localizedMessage}")
-                }
-            })
+            override fun onFailure(call: Call<ResponseLoginDto>, t: Throwable) {
+                Log.e("LoginError", "로그인 중 오류 발생: ${t.localizedMessage}")
+                liveData.value = LoginState(isSuccess = false, message = "서버 에러 발생: ${t.localizedMessage}")
+            }
+        })
     }
     private fun handleError(response: Response<ResponseLoginDto>) {
         val message = when (response.code()) {
