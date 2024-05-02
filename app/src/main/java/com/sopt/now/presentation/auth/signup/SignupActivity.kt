@@ -17,54 +17,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Call
 
-class SignupActivity : AppCompatActivity() {
-
-    private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<SignUpViewModel>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-        initViews()
-        initObserver()
-    }
-
-    private fun initViews() {
-        binding.btnSignup.setOnClickListener {
-            viewModel.signUp(getSignUpRequestDto())
-        }
-    }
-
-    private fun initObserver() {
-        viewModel.liveData.observe(this) { state ->
-            if (state.isSuccess) {
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-            } else {
-                Toast.makeText(
-                    this@SignupActivity,
-                    state.message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-    private fun getSignUpRequestDto(): RequestSignUpDto {
-        val id = binding.etId.text.toString()
-        val password = binding.etPw.text.toString()
-        val nickname = binding.etName.text.toString()
-        val phoneNumber = binding.etNumber.text.toString()
-        return RequestSignUpDto(
-            authenticationId = id,
-            password = password,
-            nickname = nickname,
-            phone = phoneNumber
-        )
-    }
-}
-
 data class SignUpState(
     val isSuccess: Boolean,
-    val message: String
+    val message: String,
+    val userId: String? = null
 )
 
 class SignUpViewModel : ViewModel() {
@@ -94,7 +50,6 @@ class SignUpViewModel : ViewModel() {
 
             override fun onFailure(call: Call<ResponseSignUpDto>, t: Throwable) {
                 Log.e("SignUpFailure", "Error during sign-up: ${t.localizedMessage}")
-
                 liveData.value = SignUpState(isSuccess = false, message = "서버 에러 발생: ${t.localizedMessage}")
             }
         })
@@ -107,5 +62,48 @@ class SignUpViewModel : ViewModel() {
             else -> "회원가입 실패: ${response.message()}"
         }
         liveData.value = SignUpState(isSuccess = false, message = message)
+    }
+}
+class SignupActivity : AppCompatActivity() {
+    private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater) }
+    private val viewModel by viewModels<SignUpViewModel>()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        initViews()
+        initObserver()
+    }
+
+    private fun initViews() {
+        binding.btnSignup.setOnClickListener {
+            viewModel.signUp(getSignUpRequestDto())
+        }
+    }
+
+    private fun initObserver() {
+        viewModel.liveData.observe(this) { SignUpState ->
+            if (SignUpState.isSuccess) {
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(
+                    this@SignupActivity,
+                    SignUpState.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+    private fun getSignUpRequestDto(): RequestSignUpDto {
+        val id = binding.etId.text.toString()
+        val password = binding.etPw.text.toString()
+        val nickname = binding.etName.text.toString()
+        val phoneNumber = binding.etNumber.text.toString()
+        return RequestSignUpDto(
+            authenticationId = id,
+            password = password,
+            nickname = nickname,
+            phone = phoneNumber
+        )
     }
 }
