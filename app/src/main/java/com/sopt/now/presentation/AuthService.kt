@@ -19,6 +19,6 @@ interface AuthService {
 
     @GET("member/info")
     fun getUserInfo(
-        @Header("memberid") memberId: Int,
-    ): Call<ResponseLoginDto>
+        @Header("memberid") memberId: Int
+    ): Call<ResponseUserInfoDto>
 }

@@ -1,6 +1,5 @@
 package com.sopt.now.presentation.auth.login
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,18 +8,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
-import com.sopt.now.presentation.main.MainActivity
 import com.sopt.now.databinding.ActivityLoginBinding
-import com.sopt.now.databinding.ActivitySignupBinding
 import com.sopt.now.presentation.RequestLoginDto
 import com.sopt.now.presentation.ResponseLoginDto
-import com.sopt.now.presentation.ResponseSignUpDto
+import com.sopt.now.presentation.ResponseUserInfoDto
 import com.sopt.now.presentation.ServicePool
-import com.sopt.now.presentation.auth.signup.SignUpState
-import com.sopt.now.presentation.auth.signup.SignUpViewModel
 import com.sopt.now.presentation.auth.signup.SignupActivity
+import com.sopt.now.presentation.main.MainActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,36 +27,8 @@ data class LoginState(
 class LoginViewModel : ViewModel() {
     private val authService by lazy { ServicePool.authService }
     val liveData = MutableLiveData<LoginState>()
-
-    fun getUserInfo(memberId: Int) {
-        authService.getUserInfo(memberId).enqueue(object : Callback<ResponseLoginDto> {
-            override fun onResponse(
-                call: Call<ResponseLoginDto>,
-                response: Response<ResponseLoginDto>,
-            ) {
-                if (response.isSuccessful) {
-//                    val data: ResponseLoginDto? = response.body()
-//                    val authenticationId = data?.data?.authenticationId
-//
-//                    // memberId를 통해 회원 정보 받아옴
-//                    liveData.value = LoginState(
-//                        isSuccess = true,
-//                        message = "회원 조회 성공: ${data?.message}",
-//                        memberId = authenticationId
-//                    )
-                } else {
-                    // 오류 응답 처리
-
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseLoginDto>, t: Throwable) {
-                liveData.value = LoginState(
-                    isSuccess = false,
-                    message = "서버 에러"
-                )
-            }
-        })
+    fun getUserInfo(memberId: Int): Call<ResponseUserInfoDto> {
+        return authService.getUserInfo(memberId)
     }
     fun login(request: RequestLoginDto) {
         authService.login(request).enqueue(object : Callback<ResponseLoginDto> {
@@ -98,7 +64,7 @@ class LoginViewModel : ViewModel() {
         val message = when (response.code()) {
             400 -> "잘못된 요청입니다. 입력 값을 확인하세요."
             409 -> "이미 등록된 사용자입니다."
-            else -> "회원가입 실패: ${response.message()}"
+            else -> "로그인 실패: ${response.message()}"
         }
         liveData.value = LoginState(isSuccess = false, message = message)
     }
@@ -137,7 +103,12 @@ class LoginActivity : AppCompatActivity() {
             ).show()
 
             if (loginState.isSuccess) {
-                startActivity(Intent(this, MainActivity::class.java))
+                val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                    loginState.memberId?.let { memberId ->
+                        putExtra("memberId", memberId)
+                    }
+                }
+                startActivity(intent)
                 finish()
             }
         }
@@ -146,20 +117,9 @@ class LoginActivity : AppCompatActivity() {
     private fun setUserData() {
         val memberId = intent.getStringExtra("userId")?.toIntOrNull() ?: 0
         viewModel.getUserInfo(memberId)
-        observeLoginState()
+        // observeLoginState()
     }
-    private fun observeLoginState() {
-        viewModel.liveData.observe(this) { userState ->
-            if (userState.isSuccess) {
-                binding.etId.setText(userState.memberId)
-                // 회원 조회 성공 메시지 표시
-                Toast.makeText(this, userState.message, Toast.LENGTH_SHORT).show()
-            } else {
-                // 실패 메시지 표시
-                Toast.makeText(this, userState.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+
     private fun getLoginRequestDto(): RequestLoginDto {
         val id = binding.etId.text.toString()
         val password = binding.etPw.text.toString()
