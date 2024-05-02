@@ -18,28 +18,36 @@ class MyPageFragment : Fragment() {
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
 
-    private var memberId: Int? = null
+    private var memberId: String? = null
 
     companion object {
-        fun newInstance(memberId: Int): MyPageFragment {
+        fun newInstance(memberId: String?): MyPageFragment {
             val fragment = MyPageFragment()
             val args = Bundle().apply {
-                putInt("memberId", memberId)
+                putString("memberId", memberId)
             }
             fragment.arguments = args
             return fragment
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMypageBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Arguments로 전달된 memberId 가져오기
-        memberId = arguments?.getInt("memberId")
+        memberId = activity?.intent?.getStringExtra("memberId") ?: "0"
 
         // 회원 정보를 가져오는 API 호출
         memberId?.let { memberId ->
-            ServicePool.authService.getUserInfo(memberId).enqueue(object : Callback<ResponseUserInfoDto> {
+            ServicePool.authService.getUserInfo(memberId.toInt()).enqueue(object : Callback<ResponseUserInfoDto> {
                 override fun onResponse(
                     call: Call<ResponseUserInfoDto>,
                     response: Response<ResponseUserInfoDto>
@@ -49,11 +57,11 @@ class MyPageFragment : Fragment() {
 
                         userInfo?.let {
                             // 가져온 회원 정보를 TextView 등에 표시
-                            binding.tvId.text = "아이디: ${it.authenticationId}"
-                            binding.tvNickname.text = "닉네임: ${it.nickname}"
+                            binding.tvMypageId.text = " ${it.authenticationId}"
+                            binding.tvMypageName.text = " ${it.nickname}"
+                            binding.tvMypagePhone.text = " ${it.phone}"
                         }
                     } else {
-                        // 오류 처리
                         Toast.makeText(requireContext(), "회원 정보를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }

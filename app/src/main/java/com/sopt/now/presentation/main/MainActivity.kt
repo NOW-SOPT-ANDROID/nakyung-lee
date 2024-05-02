@@ -1,6 +1,7 @@
 package com.sopt.now.presentation.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.sopt.now.presentation.main.mypage.MyPageFragment
@@ -17,16 +18,20 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val memberId = intent.getStringExtra("memberId") // null일 경우에는 0으로 처리
+        Log.e("MainActivity", "memberId: ${memberId}")
+
         val currentFragment = supportFragmentManager.findFragmentById(binding.fcvHome.id)
         if (currentFragment == null) {
             supportFragmentManager.beginTransaction()
                 .add(binding.fcvHome.id, HomeFragment())
                 .commit()
         }
-        setBottomNavigation()
+        setBottomNavigation(memberId)
     }
-    private fun setBottomNavigation() {
-        binding.bnvHome.setOnItemSelectedListener{
+
+    private fun setBottomNavigation(memberId: String?) {
+        binding.bnvHome.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_home -> {
                     replaceFragment(HomeFragment())
@@ -39,20 +44,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_mypage -> {
-                    val id = intent.getStringExtra("id")
-                    val password = intent.getStringExtra("password")
-                    val nickname = intent.getStringExtra("nickname")
-
-                    // MyPageFragment로 데이터 전달
-                    val bundle = Bundle().apply {
-                        putString("id", id)
-                        putString("password", password)
-                        putString("nickname", nickname)
-                    }
-
-                    val myPageFragment = MyPageFragment()
-                    myPageFragment.arguments = bundle
-
+                    val myPageFragment = MyPageFragment.newInstance(memberId)
                     replaceFragment(myPageFragment)
                     true
                 }
@@ -61,10 +53,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fcv_home, fragment)
+            .replace(binding.fcvHome.id, fragment)
             .commit()
     }
 }
-

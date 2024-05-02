@@ -37,7 +37,6 @@ class LoginViewModel : ViewModel() {
                 response: Response<ResponseLoginDto>
             ) {
                 if (response.isSuccessful) {
-                    val data = response.body()
                     val memberId = response.headers()["location"]
 
                     liveData.value = LoginState(
@@ -117,7 +116,6 @@ class LoginActivity : AppCompatActivity() {
     private fun setUserData() {
         val memberId = intent.getStringExtra("userId")?.toIntOrNull() ?: 0
         viewModel.getUserInfo(memberId)
-        // observeLoginState()
     }
 
     private fun getLoginRequestDto(): RequestLoginDto {
