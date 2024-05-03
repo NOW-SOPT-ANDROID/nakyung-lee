@@ -106,18 +106,19 @@ fun MainScaffold(userInfo: UserInfo?) {
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            when(selectedItem) {
+            when (selectedItem) {
                 0 -> {
                     HomeView(homeDataList = homeDataList)
                 }
+
                 1 -> {
                     // search 페이지 구현 x
                 }
+
                 2 -> {
                     if (userInfo != null) {
                         MypageView(userInfo = userInfo)
                     }
-
                 }
             }
         }

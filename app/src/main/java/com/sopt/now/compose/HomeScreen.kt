@@ -15,7 +15,6 @@ sealed class HomeData {
     data class UserInfoData(val userInfo: UserInfo) : HomeData()
     data class FriendData(val friend: Friend) : HomeData()
 }
-
 val homeDataList = listOf<HomeData>(
     HomeData.UserInfoData(
         userInfo = UserInfo(
@@ -113,4 +112,3 @@ fun HomeView(homeDataList: List<HomeData>) {
         }
     }
 }
-

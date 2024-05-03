@@ -29,22 +29,18 @@ import com.sopt.now.compose.ui.theme.NOWSOPTAndroidTheme
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val getId = intent.getStringExtra("id") ?: ""
         val getPassword = intent.getStringExtra("password") ?: ""
         val getNickname = intent.getStringExtra("nickname") ?: ""
         val getMbti = intent.getStringExtra("mbti") ?: ""
-
         setContent {
             LoginContent(getId, getPassword, getNickname, getMbti)
         }
     }
 }
-
 @Composable
 fun LoginContent(getId: String, getPassword: String, getNickname: String, getMbti: String) {
     var isLogged by remember { mutableStateOf(false) }
-
     if (!isLogged) {
         SoptComposable(
             getId = getId,
@@ -57,13 +53,10 @@ fun LoginContent(getId: String, getPassword: String, getNickname: String, getMbt
         context.startActivity(Intent(context, MainActivity::class.java))
     }
 }
-
 fun isValid(userId: String?, userPassword: String?, getId: String, getPassword: String): Boolean {
     return userId != "" && userPassword != "" && userId == getId && userPassword == getPassword
 }
-
 fun Success(context: Context, userId: String, userPassword: String, userNickname: String, userMbti: String?) {
-
     val intent = Intent(context, MainActivity::class.java).apply {
         putExtra("id", userId)
         putExtra("password", userPassword)
@@ -73,27 +66,23 @@ fun Success(context: Context, userId: String, userPassword: String, userNickname
     context.startActivity(intent)
     Toast.makeText(context, "로그인 성공!", Toast.LENGTH_SHORT).show()
 }
-
 @Composable
 fun SoptComposable(
     getId: String,
     getPassword: String,
     getNickname: String,
     getMbti: String
-
 ) {
     var userId by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
     var userNickname by remember { mutableStateOf("") }
     var userMbti by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-
         Text(
             text = "Welcome To SOPT",
             color = Color.Gray,
@@ -101,14 +90,11 @@ fun SoptComposable(
             fontSize = 30.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
-
         // Welcome 문구와 ID 텍스트 사이의 간격
         Spacer(modifier = Modifier.height(100.dp)) // 중간 간격을 위한 투명 view
-
         // ID 입력하는 부분 (ID 텍스트는 좌측 정렬, 텍스트 필드는 중앙 정렬)
         Column(verticalArrangement = Arrangement.Center) {
             Text(text = "ID")
-
             TextField(
                 value = userId,
                 onValueChange = { userId = it },
@@ -117,14 +103,11 @@ fun SoptComposable(
                 singleLine = true,
             )
         }
-
         // ID 텍스트 필드와 PASSWORD 텍스트 사이의 간격
         Spacer(modifier = Modifier.height(50.dp)) // 중간 간격을 위한 투명 view
-
         // PW 입력하는 부분 (PW 텍스트는 좌측 정렬, 텍스트 필드는 중앙 정렬)
         Column(verticalArrangement = Arrangement.Center) {
             Text(text = "PASSWORD")
-
             TextField(
                 value = userPassword,
                 onValueChange = { userPassword = it },
@@ -133,12 +116,9 @@ fun SoptComposable(
                 singleLine = true,
             )
         }
-
         // PW 텍스트 필드와 버튼 사이의 간격
         Spacer(modifier = Modifier.height(250.dp)) // 중간 간격을 위한 투명 view
-
         val context = LocalContext.current
-
         Button(
             onClick = { if (isValid(userId, userPassword, getId ?: "", getPassword ?: "")) {
                 Success(context, userId, userPassword, userNickname, userMbti)
@@ -155,9 +135,7 @@ fun SoptComposable(
                 fontWeight = FontWeight.Bold,
             )
         }
-
         Spacer(modifier = Modifier.height(10.dp))
-
         Button(
             onClick = {
                 val intent = Intent(context, SignupActivity::class.java)
@@ -174,11 +152,9 @@ fun SoptComposable(
                 fontWeight = FontWeight.Bold,
             )
         }
-
     }
 }
 @Preview(showBackground = true)
-
 @Composable
 fun LoginPreview() {
     NOWSOPTAndroidTheme {

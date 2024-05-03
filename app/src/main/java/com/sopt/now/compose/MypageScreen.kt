@@ -34,7 +34,8 @@ fun MypageView(userInfo: UserInfo) {
                     .size(110.dp)
                     .aspectRatio(1f)
             )
-            Text(text = "안녕하세요, ${userInfo.nickname}님",
+            Text(
+                text = "안녕하세요, ${userInfo.nickname}님",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -51,7 +52,8 @@ fun MypageView(userInfo: UserInfo) {
             )
         }
     }
-}@Composable
+}
+@Composable
 fun UserInfoComposable(id: String, password: String, nickname: String) {
     Column(
         modifier = Modifier.padding(16.dp),
@@ -65,12 +67,10 @@ fun UserInfoComposable(id: String, password: String, nickname: String) {
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = PurpleGrey40)
-
         Text(text = "비밀번호: $password \n",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = PurpleGrey40)
-
 
         Button(
             onClick = { },

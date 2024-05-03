@@ -31,14 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sopt.now.compose.ui.theme.NOWSOPTAndroidTheme
-
 class UserInfo(
     val userId: String,
     val userPassword: String,
     val userNickname: String,
     val userMbti: String
 )
-
 @Composable
 fun Signup () {
     Column(
@@ -52,7 +50,6 @@ fun Signup () {
         var userPassword by remember { mutableStateOf("") }
         var userNickname by remember { mutableStateOf("") }
         var userMbti by remember { mutableStateOf("") }
-
         Text(
             text = "SIGN UP PAGE",
             fontWeight = FontWeight.Bold,
@@ -60,16 +57,13 @@ fun Signup () {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
         Text(
             text = "ID",
             fontSize = 20.sp,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
         )
-
         TextField(
             value = userId,
             onValueChange = { newValue -> userId = newValue },
@@ -78,16 +72,13 @@ fun Signup () {
             label = { Text("아이디를 입력하세요(6~10자리)") },
             singleLine = true,
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
         Text(
             text = "PASSWORD",
             fontSize = 20.sp,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left
         )
-
         TextField(
             value = userPassword,
             onValueChange = { newValue -> userPassword = newValue },
@@ -96,16 +87,13 @@ fun Signup () {
             label = { Text("비밀번호를 입력하세요(8~12자리)") },
             singleLine = true,
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
         Text(
             text = "NICKNAME",
             fontSize = 20.sp,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left,
         )
-
         TextField(
             value = userNickname,
             onValueChange = { newValue -> userNickname = newValue },
@@ -114,16 +102,13 @@ fun Signup () {
             label = { Text("닉네임을 입력하세요(공백 안됨)") },
             singleLine = true,
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
         Text(
             text = "MBTI",
             fontSize = 20.sp,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left,
         )
-
         TextField(
             value = userMbti,
             onValueChange = { newValue -> userMbti = newValue },
@@ -132,11 +117,8 @@ fun Signup () {
             label = { Text("MBTI를 입력하세요") },
             singleLine = true,
         )
-
         Spacer(modifier = Modifier.height(30.dp))
-
         val context = LocalContext.current
-
         Button(onClick = {
             if (CheckId(context, userId) && CheckPassword(context, userPassword) && CheckNickname(context, userNickname) && CheckMbti(context, userMbti)) {
                 val intent = Intent(context, LoginActivity::class.java).apply {
@@ -147,17 +129,13 @@ fun Signup () {
                 }
                 context.startActivity(intent) // 회원가입 성공 시 MainActivity로 이동
                 Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
-
             } else {
-
             }
         }) {
             Text("Sign Up")
         }
-
     }
 }
-
 fun CheckId(context: Context, id: String): Boolean {
     if (id.length >= 6 && id.length <= 10) {
         return true
@@ -166,7 +144,6 @@ fun CheckId(context: Context, id: String): Boolean {
         return false
     }
 }
-
 fun CheckPassword(context: Context, password: String): Boolean {
     if(password.length >= 8 && password.length <= 12){
         return true
@@ -176,7 +153,6 @@ fun CheckPassword(context: Context, password: String): Boolean {
         return false
     }
 }
-
 fun CheckNickname(context: Context, nickname: String): Boolean {
     if (nickname.isNotBlank() && nickname.length > 1) {
         return true
@@ -201,7 +177,6 @@ fun CheckMbti(context: Context, mbti: String): Boolean {
 class SignupActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             NOWSOPTAndroidTheme {
                 // A surface container using the 'background' color from the theme
@@ -215,8 +190,6 @@ class SignupActivity : ComponentActivity() {
         }
     }
 }
-
-
 @Preview(showBackground = true)
 @Composable
 fun SignupPreview() {
