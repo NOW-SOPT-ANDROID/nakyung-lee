@@ -129,8 +129,6 @@ fun SignUpTextField(
 
 class SignUpViewModel : ViewModel() {
     private val _signUpState = mutableStateOf(SignUpState())
-    val signUpState: State<SignUpState> = _signUpState
-
     fun signUp(
         userId: String,
         userPassword: String,

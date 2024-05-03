@@ -1,90 +1,117 @@
 package com.sopt.now.compose
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sopt.now.compose.ui.theme.PurpleGrey40
+import com.sopt.now.compose.Dto.ResponseUserInfoDto
 import com.sopt.now.compose.user.UserInfo
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 @Composable
-fun MypageView(userInfo: UserInfo) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(30.dp),
-        verticalArrangement = Arrangement.spacedBy(40.dp),
-    ) {
-        if (userInfo != null) {
-            Image(
-                painter = painterResource(id = R.drawable.apple),
-                contentDescription = null,
+fun MyPageFragment(context: Context, userId: String) {
+    var userInfo by remember { mutableStateOf<UserInfo?>(null) }
+
+    LaunchedEffect(userId) {
+        try {
+            userInfo = getUserInfo(userId)
+        } catch (e: Exception) {
+            Log.e("MyPageFragment", "Error: ${e.message}")
+        }
+    }
+
+    userInfo?.let { user ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 30.dp, vertical = 10.dp)
+        ) {
+            Column(
                 modifier = Modifier
-                    .size(110.dp)
-                    .aspectRatio(1f)
-            )
-            Text(
-                text = "안녕하세요, ${userInfo.nickname}님",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(text = userInfo.id)
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(text = userInfo.password)
-        } else {
-            Text(
-                text = "사용자 정보를 불러올 수 없습니다.",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.width(20.dp))
+                Text(
+                    text = user.nickname,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "ID",
+                    fontSize = 25.sp
+                )
+                Text(
+                    text = user.id,
+                    fontSize = 20.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "Phone",
+                    fontSize = 25.sp
+                )
+                Text(
+                    text = user.phone,
+                    fontSize = 20.sp,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
-@Composable
-fun UserInfoComposable(id: String, password: String, nickname: String) {
-    Column(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(text = "안녕하세요, $nickname 님!\n",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.ExtraBold)
 
-        Text(text = "아이디: $id \n",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = PurpleGrey40)
-        Text(text = "비밀번호: $password \n",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = PurpleGrey40)
+suspend fun getUserInfo(userId: String): UserInfo {
+    return suspendCoroutine { continuation ->
+        ServicePool.authService.getUserInfo(userId).enqueue(object : Callback<ResponseUserInfoDto> {
+            override fun onResponse(
+                call: Call<ResponseUserInfoDto>,
+                response: Response<ResponseUserInfoDto>,
+            ) {
+                if (response.isSuccessful) {
+                    val data: ResponseUserInfoDto? = response.body()
+                    data?.let {
+                        continuation.resume(
+                            UserInfo(
+                                it.data.authenticationId,
+                                "",
+                                it.data.nickname,
+                                it.data.phone
+                            )
+                        )
+                    }
+                } else {
+                    continuation.resumeWithException(Exception("Failed to fetch user info"))
+                }
+            }
 
-        Button(
-            onClick = { },
-
-            contentPadding = PaddingValues(start = 90.dp, end = 90.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.LightGray,
-                contentColor = Color.Black
-            )
-        ) {
-            Text(text = "수정하기",
-                fontWeight = FontWeight.Bold,
-            )
-        }
+            override fun onFailure(call: Call<ResponseUserInfoDto>, t: Throwable) {
+                continuation.resumeWithException(t)
+            }
+        })
     }
-
 }

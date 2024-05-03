@@ -21,7 +21,7 @@ val homeDataList = listOf<HomeData>(
             id = "nagaeng",
             password = "qazwsx!@#",
             nickname = "이나경",
-            mbti = "ENTJ"
+            phone = "010-3412-1683"
         )
     ),
     HomeData.FriendData(

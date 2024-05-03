@@ -121,8 +121,6 @@ fun LoginTextField (
 
 class LoginViewModel : ViewModel() {
     private val _loginState = mutableStateOf(LoginState())
-    val loginState: State<LoginState> = _loginState
-
     fun login(
         userId: String,
         userPassword: String,
@@ -144,6 +142,7 @@ class LoginViewModel : ViewModel() {
                     // 로그인 성공 시 메인(홈) 화면으로 이동
                     val intent = Intent(context, MainActivity::class.java)
                     context.startActivity(intent)
+                    intent.putExtra("userId", userId)
                     // 로그인 성공 메시지 토스트로 띄우기
                     Toast.makeText(context, "로그인 성공! 유저 ID: $userId\"", Toast.LENGTH_SHORT).show()
                 } else {
