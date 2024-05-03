@@ -111,10 +111,6 @@ fun MainScaffold(userInfo: UserInfo?) {
                     HomeView(homeDataList = homeDataList)
                 }
 
-                1 -> {
-                    // search 페이지 구현 x
-                }
-
                 2 -> {
                     if (userInfo != null) {
                         MypageView(userInfo = userInfo)

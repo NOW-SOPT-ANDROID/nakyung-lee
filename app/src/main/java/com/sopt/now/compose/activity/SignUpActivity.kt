@@ -3,202 +3,178 @@ package com.sopt.now.compose.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.sopt.now.compose.ui.theme.NOWSOPTAndroidTheme
-class UserInfo(
-    val userId: String,
-    val userPassword: String,
-    val userNickname: String,
-    val userMbti: String
-)
+import androidx.lifecycle.ViewModel
+import com.sopt.now.compose.Dto.RequestSignUpDto
+import com.sopt.now.compose.Dto.ResponseSignUpDto
+import com.sopt.now.compose.ServicePool
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class SignUpActivity : ComponentActivity() {
+    private val viewModel by lazy { SignUpViewModel() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            SignUpContent(viewModel)
+        }
+    }
+}
+
 @Composable
-fun Signup () {
+fun SignUpContent(viewModel: SignUpViewModel) {
+    // 현재 컨텍스트 가져오기
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    )
-    {
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         var userId by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
         var userNickname by remember { mutableStateOf("") }
-        var userMbti by remember { mutableStateOf("") }
+        var userPhone by remember { mutableStateOf("") }
+
         Text(
             text = "SIGN UP PAGE",
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+
         Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "ID",
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left
-        )
-        TextField(
+
+        SignUpTextField(
             value = userId,
-            onValueChange = { newValue -> userId = newValue },
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = { Text("아이디를 입력하세요(6~10자리)") },
-            singleLine = true,
+            onValueChange = { userId = it },
+            label = "ID",
+            hint = "Enter your ID"
         )
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "PASSWORD",
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left
-        )
-        TextField(
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
             value = userPassword,
-            onValueChange = { newValue -> userPassword = newValue },
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = { Text("비밀번호를 입력하세요(8~12자리)") },
-            singleLine = true,
+            onValueChange = { userPassword = it },
+            label = "Password",
+            hint = "Enter your password",
+            isPassword = true
         )
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "NICKNAME",
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left,
-        )
-        TextField(
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
             value = userNickname,
-            onValueChange = { newValue -> userNickname = newValue },
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = { Text("닉네임을 입력하세요(공백 안됨)") },
-            singleLine = true,
+            onValueChange = { userNickname = it },
+            label = "Nickname",
+            hint = "Enter your nickname"
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
+            value = userPhone,
+            onValueChange = { userPhone = it },
+            label = "PHONE",
+            hint = "Enter your phone number"
+        )
+
         Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "MBTI",
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Left,
-        )
-        TextField(
-            value = userMbti,
-            onValueChange = { newValue -> userMbti = newValue },
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = { Text("MBTI를 입력하세요") },
-            singleLine = true,
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-        val context = LocalContext.current
+
         Button(onClick = {
-            if (CheckId(context, userId) && CheckPassword(context, userPassword) && CheckNickname(context, userNickname) && CheckMbti(context, userMbti)) {
-                val intent = Intent(context, LoginActivity::class.java).apply {
-                    putExtra("id", userId)
-                    putExtra("password", userPassword)
-                    putExtra("nickname", userNickname)
-                    putExtra("mbti", userMbti)
-                }
-                context.startActivity(intent) // 회원가입 성공 시 MainActivity로 이동
-                Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
-            } else {
-            }
+            viewModel.signUp(userId, userPassword, userNickname, userPhone, context)
         }) {
             Text("Sign Up")
         }
     }
 }
-fun CheckId(context: Context, id: String): Boolean {
-    if (id.length >= 6 && id.length <= 10) {
-        return true
-    } else {
-        Toast.makeText(context, "ID는 6자 이상, 10자 이하로 입력해주세요", Toast.LENGTH_SHORT).show()
-        return false
-    }
-}
-fun CheckPassword(context: Context, password: String): Boolean {
-    if(password.length >= 8 && password.length <= 12){
-        return true
-    }
-    else {
-        Toast.makeText(context, "PASSWORD는 8자 이상, 12자 이하로 입력해주세요", Toast.LENGTH_SHORT).show()
-        return false
-    }
-}
-fun CheckNickname(context: Context, nickname: String): Boolean {
-    if (nickname.isNotBlank() && nickname.length > 1) {
-        return true
-    } else {
-        Toast.makeText(context, "닉네임은 2자 이상의 유효한 문자로 입력해주세요", Toast.LENGTH_SHORT).show()
-        return false
-    }
-}
-fun CheckMbti(context: Context, mbti: String): Boolean {
-    if ((mbti.length == 4)
-        && (mbti[0].uppercase() == "E" || mbti[0].uppercase() == "I")
-        && (mbti[1].uppercase() == "S" || mbti[1].uppercase() == "N")
-        && (mbti[2].uppercase() == "F" || mbti[2].uppercase() == "T")
-        && (mbti[3].uppercase() == "P" || mbti[3].uppercase() == "J")
+
+@Composable
+fun SignUpTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    hint: String,
+    isPassword: Boolean = false
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        placeholder = { Text(hint) },
+        singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth(),
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
     )
-        return true
-    else {
-        Toast.makeText(context, "MBTI를 제대로 입력해주세요(ex. ENTJ)", Toast.LENGTH_SHORT).show()
-        return false
-    }
 }
-class SignupActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            NOWSOPTAndroidTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Signup()
+
+class SignUpViewModel : ViewModel() {
+    private val _signUpState = mutableStateOf(SignUpState())
+    val signUpState: State<SignUpState> = _signUpState
+
+    fun signUp(
+        userId: String,
+        userPassword: String,
+        userNickname: String,
+        userPhone: String,
+        context: Context
+    ) {
+        val signUpRequestDto = RequestSignUpDto(userId, userPassword, userNickname, userPhone)
+        val authService = ServicePool.authService
+
+        authService.signUp(signUpRequestDto).enqueue(object : Callback<ResponseSignUpDto> {
+            override fun onResponse(
+                call: Call<ResponseSignUpDto>,
+                response: Response<ResponseSignUpDto>
+            ) {
+                if (response.isSuccessful) {
+                    val userId = response.headers()["location"]
+                    _signUpState.value = SignUpState(isSuccess = true, message = "회원가입 성공!")
+                    Log.e("userId", "sign up success for $userId")
+
+                    // 회원가입 성공 시 로그인 화면으로 이동
+                    val intent = Intent(context, LoginActivity::class.java)
+                    context.startActivity(intent)
+                    // 회원가입 성공 메시지 토스트로 띄우기
+                    Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
+                } else {
+                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                    _signUpState.value = SignUpState(isSuccess = false, message = errorMessage)
+                    // 회원가입 실패 시 실패 원인 토스트로 띄우기
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+
+            override fun onFailure(call: Call<ResponseSignUpDto>, t: Throwable) {
+                val errorMessage = "서버 통신 오류: ${t.localizedMessage}"
+                _signUpState.value = SignUpState(isSuccess = false, message = errorMessage)
+                // 서버 통신 오류 시 토스트로 띄우기
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun SignupPreview() {
-    NOWSOPTAndroidTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ){
-            Signup()
-        }
-    }
-}
+
+data class SignUpState(
+    val isSuccess: Boolean = false,
+    val message: String = ""
+)
