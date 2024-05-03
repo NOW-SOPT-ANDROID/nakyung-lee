@@ -1,4 +1,5 @@
 package com.sopt.now.compose.user
+
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -6,19 +7,20 @@ data class UserInfo(
     val id: String,
     val password: String,
     val nickname: String,
-    val mbti: String
+    val phone: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        "ENTJ"
+        parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(password)
         parcel.writeString(nickname)
+        parcel.writeString(phone)
     }
 
     override fun describeContents(): Int {

@@ -11,12 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,26 +20,27 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import com.sopt.now.compose.Dto.RequestLoginDto
-import com.sopt.now.compose.Dto.ResponseLoginDto
+import com.sopt.now.compose.Dto.RequestSignUpDto
+import com.sopt.now.compose.Dto.ResponseSignUpDto
 import com.sopt.now.compose.ServicePool
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginActivity : ComponentActivity() {
-    private val viewModel by lazy { LoginViewModel() }
+class SignUpActivity : ComponentActivity() {
+    private val viewModel by lazy { SignUpViewModel() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginContent(viewModel)
+            SignUpContent(viewModel)
         }
     }
 }
 
 @Composable
-fun LoginContent(viewModel: LoginViewModel) {
+fun SignUpContent(viewModel: SignUpViewModel) {
+    // 현재 컨텍스트 가져오기
     val context = LocalContext.current
 
     Column(
@@ -55,9 +51,11 @@ fun LoginContent(viewModel: LoginViewModel) {
     ) {
         var userId by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
+        var userNickname by remember { mutableStateOf("") }
+        var userPhone by remember { mutableStateOf("") }
 
         Text(
-            text = "LOGIN PAGE",
+            text = "SIGN UP PAGE",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -73,34 +71,44 @@ fun LoginContent(viewModel: LoginViewModel) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        LoginTextField(
+        SignUpTextField(
             value = userPassword,
             onValueChange = { userPassword = it },
             label = "Password",
             hint = "Enter your password",
             isPassword = true
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
+            value = userNickname,
+            onValueChange = { userNickname = it },
+            label = "Nickname",
+            hint = "Enter your nickname"
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
+            value = userPhone,
+            onValueChange = { userPhone = it },
+            label = "PHONE",
+            hint = "Enter your phone number"
+        )
+
         Spacer(modifier = Modifier.height(30.dp))
 
         Button(onClick = {
-            viewModel.login(userId, userPassword, context)
+            viewModel.signUp(userId, userPassword, userNickname, userPhone, context)
         }) {
-            Text("로그인")
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // 회원가입으로 이동할 수 있는 버튼 추가
-        Button(onClick = {
-            val intent = Intent(context, SignUpActivity::class.java)
-            context.startActivity(intent)
-        }) {
-            Text("회원가입")
+            Text("Sign Up")
         }
     }
 }
 
 @Composable
-fun LoginTextField (
+fun SignUpTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -119,50 +127,52 @@ fun LoginTextField (
     )
 }
 
-class LoginViewModel : ViewModel() {
-    private val _loginState = mutableStateOf(LoginState())
-    fun login(
+class SignUpViewModel : ViewModel() {
+    private val _signUpState = mutableStateOf(SignUpState())
+    fun signUp(
         userId: String,
         userPassword: String,
+        userNickname: String,
+        userPhone: String,
         context: Context
     ) {
-        val loginRequestDto = RequestLoginDto(userId, userPassword)
+        val signUpRequestDto = RequestSignUpDto(userId, userPassword, userNickname, userPhone)
         val authService = ServicePool.authService
 
-        authService.login(loginRequestDto).enqueue(object : Callback<ResponseLoginDto> {
+        authService.signUp(signUpRequestDto).enqueue(object : Callback<ResponseSignUpDto> {
             override fun onResponse(
-                call: Call<ResponseLoginDto>,
-                response: Response<ResponseLoginDto>
+                call: Call<ResponseSignUpDto>,
+                response: Response<ResponseSignUpDto>
             ) {
                 if (response.isSuccessful) {
                     val userId = response.headers()["location"]
-                    _loginState.value = LoginState(isSuccess = true, message = "로그인 성공!")
-                    Log.e("userId", "login success for $userId")
+                    _signUpState.value = SignUpState(isSuccess = true, message = "회원가입 성공!")
+                    Log.e("userId", "sign up success for $userId")
 
-                    // 로그인 성공 시 메인(홈) 화면으로 이동
-                    val intent = Intent(context, MainActivity::class.java)
+                    // 회원가입 성공 시 로그인 화면으로 이동
+                    val intent = Intent(context, LoginActivity::class.java)
                     context.startActivity(intent)
-                    intent.putExtra("userId", userId)
-                    // 로그인 성공 메시지 토스트로 띄우기
-                    Toast.makeText(context, "로그인 성공! 유저 ID: $userId\"", Toast.LENGTH_SHORT).show()
+                    // 회원가입 성공 메시지 토스트로 띄우기
+                    Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show()
                 } else {
                     val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    _loginState.value = LoginState(isSuccess = false, message = errorMessage)
+                    _signUpState.value = SignUpState(isSuccess = false, message = errorMessage)
                     // 회원가입 실패 시 실패 원인 토스트로 띄우기
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<ResponseLoginDto>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseSignUpDto>, t: Throwable) {
                 val errorMessage = "서버 통신 오류: ${t.localizedMessage}"
-                _loginState.value = LoginState(isSuccess = false, message = errorMessage)
+                _signUpState.value = SignUpState(isSuccess = false, message = errorMessage)
                 // 서버 통신 오류 시 토스트로 띄우기
                 Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
             }
         })
     }
 }
-data class LoginState(
+
+data class SignUpState(
     val isSuccess: Boolean = false,
     val message: String = ""
 )
