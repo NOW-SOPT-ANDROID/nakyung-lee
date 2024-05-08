@@ -10,6 +10,7 @@ import com.sopt.now.databinding.ActivityLoginBinding
 import com.sopt.now.presentation.RequestLoginDto
 import com.sopt.now.presentation.auth.signup.SignupActivity
 import com.sopt.now.presentation.main.MainActivity
+
 class LoginActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<LoginViewModel>()
@@ -19,15 +20,15 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViews()
         initObserver()
-        setUserData() // user data 세팅
+        getMemberId()
     }
 
     private fun initViews() {
-        // 로그인 버튼 CLICK
+        // 로그인 버튼 클릭
         binding.btnLogin.setOnClickListener {
             viewModel.login(getLoginRequestDto())
         }
-        // 회원가입 버튼 CLICK
+        // 회원가입 버튼 클릭
         binding.btnSignup.setOnClickListener {
             Intent(this@LoginActivity, SignupActivity::class.java).let {
                 startActivity(it)
@@ -36,26 +37,51 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        viewModel.liveData.observe(this) { loginState ->
+        viewModel.loginStateLiveData.observe(this) { loginState ->
             Toast.makeText(
                 this@LoginActivity,
                 loginState.message,
                 Toast.LENGTH_SHORT
             ).show()
 
-            if (loginState.isSuccess) {
-                val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
-                    loginState.memberId?.let { memberId ->
-                        putExtra("memberId", memberId)
+            when (loginState.status) {
+                LoginStatus.SUCCESS -> {
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                        loginState.memberId?.let { memberId ->
+                            putExtra("memberId", memberId)
+                        }
                     }
+                    startActivity(intent)
+                    finish()
                 }
-                startActivity(intent)
-                finish()
+                LoginStatus.INPUT_ERROR -> {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "잘못된 입력입니다. 아이디와 비밀번호를 확인해주세요.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                LoginStatus.DUPLICATE_USER -> {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "이미 등록된 사용자입니다.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                LoginStatus.ERROR -> {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                LoginStatus.NETWORK_ERROR -> TODO()
             }
         }
     }
 
-    private fun setUserData() {
+    private fun getMemberId() {
         val memberId = intent.getStringExtra("userId")?.toIntOrNull() ?: 0
         viewModel.getUserInfo(memberId)
     }
