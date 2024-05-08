@@ -86,8 +86,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getLoginRequestDto(): RequestLoginDto {
-        val id = binding.etId.text.toString()
-        val password = binding.etPw.text.toString()
+        val id = binding.edtLoginId.text.toString()
+        val password = binding.edtLoginPassword.text.toString()
         return RequestLoginDto(
             authenticationId = id,
             password = password,

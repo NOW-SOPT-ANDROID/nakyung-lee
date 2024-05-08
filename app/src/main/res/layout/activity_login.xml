@@ -36,7 +36,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:hint="ID를 입력하세요"
-        android:id="@+id/et_id"
+        android:id="@+id/edt_login_id"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -58,7 +58,7 @@
         android:layout_marginEnd="70dp"
         android:hint="PASSWORD를 입력하세요"
         android:inputType="textPassword"
-        android:id="@+id/et_pw"
+        android:id="@+id/edt_login_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />

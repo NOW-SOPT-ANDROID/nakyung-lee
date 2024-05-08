@@ -41,10 +41,10 @@ class SignupActivity : AppCompatActivity() {
         }
     }
     private fun getSignUpRequestDto(): RequestSignUpDto {
-        val id = binding.etId.text.toString()
-        val password = binding.etPw.text.toString()
-        val nickname = binding.etName.text.toString()
-        val phoneNumber = binding.etNumber.text.toString()
+        val id = binding.edtSignupId.text.toString()
+        val password = binding.edtSignupPassword.text.toString()
+        val nickname = binding.edtSignupNickname.text.toString()
+        val phoneNumber = binding.edtSignupPhonenumber.text.toString()
         return RequestSignUpDto(
             authenticationId = id,
             password = password,
