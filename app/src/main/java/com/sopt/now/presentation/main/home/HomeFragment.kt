@@ -12,7 +12,7 @@ import com.sopt.now.databinding.FragmentHomeBinding
 class HomeFragment: Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var friendListAdapter: FriendListAdapter
+    private var friendListAdapter: FriendListAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -86,10 +86,11 @@ class HomeFragment: Fragment() {
         binding.rvFriends.adapter = friendListAdapter
         binding.rvFriends.layoutManager = LinearLayoutManager(requireContext())
 
-        friendListAdapter.setFriendList(mockFriendList)
+        friendListAdapter?.setFriendList(mockFriendList)
     }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        friendListAdapter = null
     }
 }

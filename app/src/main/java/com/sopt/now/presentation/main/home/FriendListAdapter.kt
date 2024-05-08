@@ -42,9 +42,7 @@ class FriendListAdapter(private val myProfile: MyProfile) : RecyclerView.Adapter
         }
     }
 
-    override fun getItemCount(): Int {
-        return friendList.size + 1 // 내 프로필을 포함하기 위해 +1을 함
-    }
+    override fun getItemCount(): Int = friendList.size + 1
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) {
