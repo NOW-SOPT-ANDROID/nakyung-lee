@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -9,13 +8,13 @@
         android:id="@+id/iv_myprofile"
         android:layout_width="75dp"
         android:layout_height="0dp"
+        android:layout_marginVertical="10dp"
         android:layout_marginStart="20dp"
         android:scaleType="centerCrop"
-        android:layout_marginVertical="10dp"
         android:src="@drawable/ic_person_black_24"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -36,10 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:maxLines="1"
+        android:text="Last Chance - 소수빈"
         app:layout_constraintBottom_toBottomOf="@id/iv_myprofile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_myprofile"
-        android:text="Last Chance - 소수빈"
-        />
+        app:layout_constraintTop_toTopOf="@id/iv_myprofile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

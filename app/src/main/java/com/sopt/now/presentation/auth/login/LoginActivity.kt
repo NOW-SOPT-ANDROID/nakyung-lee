@@ -44,14 +44,11 @@ class LoginActivity : AppCompatActivity() {
             ).show()
 
             when (loginState.status) {
-                LoginStatus.SUCCESS -> {
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
-                        loginState.memberId?.let { memberId ->
-                            putExtra("memberId", memberId)
-                        }
+                LoginStatus.SUCCESS -> Intent(this@LoginActivity, MainActivity::class.java).apply {
+                    loginState.memberId?.let { memberId ->
+                        putExtra("memberId", memberId)
+                        startActivity(this)
                     }
-                    startActivity(intent)
-                    finish()
                 }
                 LoginStatus.INPUT_ERROR -> {
                     Toast.makeText(
