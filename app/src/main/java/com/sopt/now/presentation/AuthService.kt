@@ -1,5 +1,10 @@
 package com.sopt.now.presentation
 
+import com.sopt.now.presentation.Dto.RequestLoginDto
+import com.sopt.now.presentation.Dto.RequestSignUpDto
+import com.sopt.now.presentation.Dto.ResponseLoginDto
+import com.sopt.now.presentation.Dto.ResponseSignUpDto
+import com.sopt.now.presentation.Dto.ResponseUserInfoDto
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET

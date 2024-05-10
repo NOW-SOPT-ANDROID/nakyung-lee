@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.sopt.now.databinding.ActivityLoginBinding
-import com.sopt.now.presentation.RequestLoginDto
+import com.sopt.now.presentation.Dto.RequestLoginDto
 import com.sopt.now.presentation.auth.signup.SignupActivity
 import com.sopt.now.presentation.main.MainActivity
 
@@ -18,7 +18,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         clickButtonListener()
-        initObserver()
+        observeLoginState()
         getMemberId()
     }
 
@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun initObserver() {
+    private fun observeLoginState() {
         viewModel.loginStateLiveData.observe(this) { loginState ->
             Toast.makeText(
                 this@LoginActivity,

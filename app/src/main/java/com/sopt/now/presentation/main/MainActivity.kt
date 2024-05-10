@@ -18,9 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val memberId = intent.getStringExtra("memberId") // null일 경우에는 0으로 처리
-        Log.e("MainActivity", "memberId: ${memberId}")
-
+        val memberId = intent.getStringExtra("memberId")
         val currentFragment = supportFragmentManager.findFragmentById(binding.fcvHome.id)
         if (currentFragment == null) {
             supportFragmentManager.beginTransaction()

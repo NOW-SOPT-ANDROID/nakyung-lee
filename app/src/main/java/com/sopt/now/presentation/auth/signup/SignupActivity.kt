@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.sopt.now.databinding.ActivitySignupBinding
-import com.sopt.now.presentation.RequestSignUpDto
+import com.sopt.now.presentation.Dto.RequestSignUpDto
 import com.sopt.now.presentation.auth.login.LoginActivity
 
 class SignupActivity : AppCompatActivity() {
@@ -17,17 +15,17 @@ class SignupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        initViews()
-        initObserver()
+        SignupButtonClickListener()
+        observeSignupState()
     }
 
-    private fun initViews() {
+    private fun SignupButtonClickListener() {
         binding.btnSignup.setOnClickListener {
             viewModel.signUp(getSignUpRequestDto())
         }
     }
 
-    private fun initObserver() {
+    private fun observeSignupState() {
         viewModel.liveData.observe(this) { SignUpState ->
             if (SignUpState.isSuccess) {
                 startActivity(Intent(this, LoginActivity::class.java))

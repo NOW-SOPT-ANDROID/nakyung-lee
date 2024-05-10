@@ -3,9 +3,9 @@ package com.sopt.now.presentation.auth.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.sopt.now.presentation.RequestLoginDto
-import com.sopt.now.presentation.ResponseLoginDto
-import com.sopt.now.presentation.ResponseUserInfoDto
+import com.sopt.now.presentation.Dto.RequestLoginDto
+import com.sopt.now.presentation.Dto.ResponseLoginDto
+import com.sopt.now.presentation.Dto.ResponseUserInfoDto
 import com.sopt.now.presentation.ServicePool
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,12 +27,11 @@ class LoginViewModel : ViewModel() {
                 call: Call<ResponseLoginDto>,
                 response: Response<ResponseLoginDto>
             ) {
+                val memberId = response.headers()["location"]
                 if (response.isSuccessful) {
-                    val memberId = response.headers()["location"]
                     _loginStateLiveData.value = LoginState(
                         LoginStatus.SUCCESS,
-                        "로그인 성공 user의 id: $memberId",
-                        memberId
+                        "로그인 성공 user의 id: $memberId", memberId
                     )
                 } else {
                     handleError(response)

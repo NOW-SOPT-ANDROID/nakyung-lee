@@ -1,7 +1,6 @@
 package com.sopt.now.presentation.main.mypage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.sopt.now.databinding.FragmentMypageBinding
 import com.sopt.now.presentation.ServicePool
-import com.sopt.now.presentation.ResponseUserInfoDto
+import com.sopt.now.presentation.Dto.ResponseUserInfoDto
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,8 +66,6 @@ class MyPageFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<ResponseUserInfoDto>, t: Throwable) {
-                    // 실패 시 처리
-                    Log.e("MyPageFragment", "Failed to fetch user info: ${t.message}")
                     Toast.makeText(requireContext(), "서버와의 통신 실패", Toast.LENGTH_SHORT).show()
                 }
             })

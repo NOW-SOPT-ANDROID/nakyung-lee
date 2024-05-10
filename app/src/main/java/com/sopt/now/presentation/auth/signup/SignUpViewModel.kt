@@ -3,8 +3,8 @@ package com.sopt.now.presentation.auth.signup
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.sopt.now.presentation.RequestSignUpDto
-import com.sopt.now.presentation.ResponseSignUpDto
+import com.sopt.now.presentation.Dto.RequestSignUpDto
+import com.sopt.now.presentation.Dto.ResponseSignUpDto
 import com.sopt.now.presentation.ServicePool
 import retrofit2.Callback
 import retrofit2.Response

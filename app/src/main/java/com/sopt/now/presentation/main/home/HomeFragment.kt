@@ -89,8 +89,8 @@ class HomeFragment: Fragment() {
         friendListAdapter?.setFriendList(mockFriendList)
     }
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
         friendListAdapter = null
+        super.onDestroyView()
     }
 }
