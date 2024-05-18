@@ -1,7 +1,8 @@
-package com.sopt.now.presentation
+package com.sopt.now.presentation.data
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.sopt.now.BuildConfig
+import com.sopt.now.presentation.data.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -20,6 +21,7 @@ object ApiFactory {
     // OkHttpClient 설정
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)  // 로깅 인터셉터 추가
+        .addInterceptor(AuthInterceptor())
         .connectTimeout(30, TimeUnit.SECONDS) // 연결 타임아웃
         .readTimeout(30, TimeUnit.SECONDS)    // 읽기 타임아웃
         .writeTimeout(30, TimeUnit.SECONDS)   // 쓰기 타임아웃
