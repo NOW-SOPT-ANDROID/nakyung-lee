@@ -5,63 +5,63 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".presentation.auth.login.LoginActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         android:text="WELCOME TO NOW SOPT"
+        android:textColor="#ab9bbf"
         android:textSize="24dp"
         android:textStyle="bold"
-        android:layout_marginTop="70dp"
-        android:textColor="#ab9bbf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="200dp"
         android:text="ID"
         android:textSize="20dp"
-        android:layout_marginTop="200dp"
-        android:layout_marginStart="70dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
+        android:id="@+id/edt_login_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="230dp"
         android:layout_marginStart="70dp"
+        android:layout_marginTop="230dp"
         android:layout_marginEnd="70dp"
         android:hint="ID를 입력하세요"
-        android:id="@+id/txtfield_id"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="320dp"
         android:text="PASSWORD"
         android:textSize="20dp"
-        android:layout_marginTop="320dp"
-        android:layout_marginStart="70dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
+        android:id="@+id/edt_login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="350dp"
         android:layout_marginStart="70dp"
+        android:layout_marginTop="350dp"
         android:layout_marginEnd="70dp"
         android:hint="PASSWORD를 입력하세요"
         android:inputType="textPassword"
-        android:id="@+id/txtfield_pw"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
@@ -69,11 +69,11 @@
         android:layout_marginBottom="130dp"
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:text="로그인"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/btn_signup"
         android:layout_width="wrap_content"
@@ -81,10 +81,9 @@
         android:layout_marginBottom="70dp"
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:text="회원가입"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

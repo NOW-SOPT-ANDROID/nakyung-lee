@@ -1,4 +1,4 @@
-package com.sopt.now
+package com.sopt.now.presentation.main.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.sopt.now.R
 import com.sopt.now.databinding.FragmentHomeBinding
-import com.sopt.now.databinding.ItemFriendBinding
 
 class HomeFragment: Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var friendListAdapter: FriendListAdapter
+    private var friendListAdapter: FriendListAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -87,10 +86,11 @@ class HomeFragment: Fragment() {
         binding.rvFriends.adapter = friendListAdapter
         binding.rvFriends.layoutManager = LinearLayoutManager(requireContext())
 
-        friendListAdapter.setFriendList(mockFriendList)
+        friendListAdapter?.setFriendList(mockFriendList)
     }
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        friendListAdapter = null
+        super.onDestroyView()
     }
 }

@@ -8,13 +8,13 @@
         android:id="@+id/iv_profile"
         android:layout_width="50dp"
         android:layout_height="0dp"
+        android:layout_marginVertical="10dp"
         android:layout_marginStart="20dp"
         android:scaleType="centerCrop"
-        android:layout_marginVertical="10dp"
         android:src="@drawable/ic_person_black_24"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
