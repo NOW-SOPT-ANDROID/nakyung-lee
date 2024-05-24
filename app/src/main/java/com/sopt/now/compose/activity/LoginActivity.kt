@@ -1,18 +1,19 @@
 package com.sopt.now.compose.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,13 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import com.sopt.now.compose.Dto.RequestLoginDto
-import com.sopt.now.compose.Dto.ResponseLoginDto
-import com.sopt.now.compose.ServicePool
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.sopt.now.compose.viewModel.LoginViewModel
 
 class LoginActivity : ComponentActivity() {
     private val viewModel by lazy { LoginViewModel() }
@@ -83,7 +78,7 @@ fun LoginContent(viewModel: LoginViewModel) {
         Spacer(modifier = Modifier.height(30.dp))
 
         Button(onClick = {
-            viewModel.login(userId, userPassword, context)
+            viewModel.login(userId, userPassword)
         }) {
             Text("로그인")
         }
@@ -119,49 +114,6 @@ fun LoginTextField (
     )
 }
 
-class LoginViewModel : ViewModel() {
-    private val _loginState = mutableStateOf(LoginState())
-    fun login(
-        userId: String,
-        userPassword: String,
-        context: Context
-    ) {
-        val loginRequestDto = RequestLoginDto(userId, userPassword)
-        val authService = ServicePool.authService
-
-        authService.login(loginRequestDto).enqueue(object : Callback<ResponseLoginDto> {
-            override fun onResponse(
-                call: Call<ResponseLoginDto>,
-                response: Response<ResponseLoginDto>
-            ) {
-                if (response.isSuccessful) {
-                    val userId = response.headers()["location"]
-                    _loginState.value = LoginState(isSuccess = true, message = "로그인 성공!")
-                    Log.e("userId", "login success for $userId")
-
-                    // 로그인 성공 시 메인(홈) 화면으로 이동
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
-                    intent.putExtra("userId", userId)
-                    // 로그인 성공 메시지 토스트로 띄우기
-                    Toast.makeText(context, "로그인 성공! 유저 ID: $userId\"", Toast.LENGTH_SHORT).show()
-                } else {
-                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    _loginState.value = LoginState(isSuccess = false, message = errorMessage)
-                    // 회원가입 실패 시 실패 원인 토스트로 띄우기
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseLoginDto>, t: Throwable) {
-                val errorMessage = "서버 통신 오류: ${t.localizedMessage}"
-                _loginState.value = LoginState(isSuccess = false, message = errorMessage)
-                // 서버 통신 오류 시 토스트로 띄우기
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-}
 data class LoginState(
     val isSuccess: Boolean = false,
     val message: String = ""
