@@ -31,11 +31,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-//    private suspend fun getMemberId() {
-//        val memberId = intent.getStringExtra("userId")?.toIntOrNull() ?: 0
-//        viewModel.getUserInfo(memberId)
-//    }
-
     private fun getLoginRequestDto(): RequestLoginDto {
         val id = binding.edtLoginId.text.toString()
         val password = binding.edtLoginPassword.text.toString()
