@@ -1,23 +1,17 @@
 package com.sopt.now.compose.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,21 +19,29 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.sopt.now.compose.viewModel.LoginViewModel
+import androidx.lifecycle.ViewModel
+import com.sopt.now.compose.Dto.RequestSignUpDto
+import com.sopt.now.compose.Dto.ResponseSignUpDto
+import com.sopt.now.compose.ServicePool
+import com.sopt.now.compose.viewModel.SignUpViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class LoginActivity : ComponentActivity() {
-    private val viewModel by lazy { LoginViewModel() }
+class SignUpActivity : ComponentActivity() {
+    private val viewModel by lazy { SignUpViewModel() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginContent(viewModel)
+            SignUpContent(viewModel)
         }
     }
 }
 
 @Composable
-fun LoginContent(viewModel: LoginViewModel) {
+fun SignUpContent(viewModel: SignUpViewModel) {
+    // 현재 컨텍스트 가져오기
     val context = LocalContext.current
 
     Column(
@@ -50,9 +52,11 @@ fun LoginContent(viewModel: LoginViewModel) {
     ) {
         var userId by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
+        var userNickname by remember { mutableStateOf("") }
+        var userPhone by remember { mutableStateOf("") }
 
         Text(
-            text = "LOGIN PAGE",
+            text = "SIGN UP PAGE",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
@@ -68,34 +72,44 @@ fun LoginContent(viewModel: LoginViewModel) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        LoginTextField(
+        SignUpTextField(
             value = userPassword,
             onValueChange = { userPassword = it },
             label = "Password",
             hint = "Enter your password",
             isPassword = true
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
+            value = userNickname,
+            onValueChange = { userNickname = it },
+            label = "Nickname",
+            hint = "Enter your nickname"
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignUpTextField(
+            value = userPhone,
+            onValueChange = { userPhone = it },
+            label = "PHONE",
+            hint = "Enter your phone number"
+        )
+
         Spacer(modifier = Modifier.height(30.dp))
 
         Button(onClick = {
-            viewModel.login(userId, userPassword)
+            viewModel.signUp(userId, userPassword, userNickname, userPhone, context)
         }) {
-            Text("로그인")
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // 회원가입으로 이동할 수 있는 버튼 추가
-        Button(onClick = {
-            val intent = Intent(context, SignUpActivity::class.java)
-            context.startActivity(intent)
-        }) {
-            Text("회원가입")
+            Text("Sign Up")
         }
     }
 }
 
 @Composable
-fun LoginTextField (
+fun SignUpTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -114,7 +128,7 @@ fun LoginTextField (
     )
 }
 
-data class LoginState(
+data class SignUpState(
     val isSuccess: Boolean = false,
     val message: String = ""
 )

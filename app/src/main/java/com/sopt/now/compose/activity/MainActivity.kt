@@ -1,6 +1,7 @@
 package com.sopt.now.compose.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -33,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.sopt.now.compose.BottomNaviItem
 import com.sopt.now.compose.HomeView
-import com.sopt.now.compose.MypageView
 import com.sopt.now.compose.homeDataList
 import com.sopt.now.compose.user.UserInfo
 
@@ -57,10 +57,23 @@ class MainActivity : ComponentActivity() {
         const val USER_INFO = "user_info"
     }
 }
+@Composable
+fun MyPageView(userInfo: UserInfo) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "User Info")
+        Text(text = "ID: ${userInfo.id}")
+        Text(text = "Nickname: ${userInfo.nickname}")
+        Text(text = "Phone: ${userInfo.phone}")
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold(userInfo: UserInfo?) {
-    var presses by remember { mutableIntStateOf(0) }
     var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf(
         BottomNaviItem(
@@ -106,18 +119,17 @@ fun MainScaffold(userInfo: UserInfo?) {
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            when(selectedItem) {
+            when (selectedItem) {
                 0 -> {
                     HomeView(homeDataList = homeDataList)
                 }
-                1 -> {
-                    // search 페이지 구현 x
-                }
+
                 2 -> {
                     if (userInfo != null) {
-                        MypageView(userInfo = userInfo)
+                        MyPageView(userInfo = userInfo)
                     }
-
+                    else
+                        Log.e("MyPageView", "User information not available")
                 }
             }
         }
